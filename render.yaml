@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: vote-backend
+    env: php
+    buildCommand: ""
+    startCommand: "php -S 0.0.0.0:10000 index.php"
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        value: bincom_test
+      - key: DB_PORT
+        value: 3306
+      - key: RUN_MIGRATION
+        value: "true"
