@@ -1,7 +1,7 @@
 <?php
 class PollingUnitController {
     public static function getPollingUnits($conn) {
-        $query = "SELECT uniqueid, polling_unit_name FROM polling_unit WHERE state_id = 25";
+        $query = "SELECT uniqueid, polling_unit_name FROM polling_unit";
         $result = mysqli_query($conn, $query);
         $units = [];
         while ($row = mysqli_fetch_assoc($result)) {
