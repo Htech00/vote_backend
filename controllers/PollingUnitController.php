@@ -45,6 +45,19 @@ class PollingUnitController {
 
         echo json_encode(["success" => true, "message" => "Polling unit results saved successfully"]);
     }
+    
+
+     public static function getParties($conn) {
+        $query = "SELECT partyid FROM party";
+        $result = mysqli_query($conn, $query);
+
+        $parties = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $parties[] = $row;
+        }
+
+        echo json_encode($parties);
+    }
 
     
 }
