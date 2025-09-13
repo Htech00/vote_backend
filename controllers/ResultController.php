@@ -1,18 +1,28 @@
 <?php
 class ResultController {
     public static function addResult($conn, $data) {
-        $polling_unit_id = intval($data['polling_unit_id']);
-        $entered_by_user = mysqli_real_escape_string($conn, $data['entered_by_user']);
-        $user_ip_address = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        if (!is_array($data)) {
+            echo json_encode(["success" => false, "message" => "Invalid data format"]);
+            return;
+        }
 
-        foreach ($data['results'] as $party => $score) {
-            $party = mysqli_real_escape_string($conn, $party);
-            $score = intval($score);
+        foreach ($data as $row) {
+            $polling_unit_id = intval($row['polling_unit_uniqueid']);
+            $party = mysqli_real_escape_string($conn, $row['party_abbreviation']);
+            $score = intval($row['party_score']);
+            $entered_by_user = mysqli_real_escape_string($conn, $row['entered_by_user']);
+            $user_ip_address = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+
             $query = "INSERT INTO announced_pu_results 
                       (polling_unit_uniqueid, party_abbreviation, party_score, entered_by_user, date_entered, user_ip_address)
                       VALUES ($polling_unit_id, '$party', $score, '$entered_by_user', NOW(), '$user_ip_address')";
-            mysqli_query($conn, $query);
+
+            if (!mysqli_query($conn, $query)) {
+                echo json_encode(["success" => false, "message" => "DB Error: " . mysqli_error($conn)]);
+                return;
+            }
         }
+
         echo json_encode(["success" => true, "message" => "Results added successfully"]);
     }
 }
