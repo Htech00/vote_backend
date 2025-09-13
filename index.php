@@ -8,6 +8,7 @@ require_once __DIR__ . '/config/db_connect.php';
 require_once __DIR__ . '/controllers/PollingUnitController.php';
 require_once __DIR__ . '/controllers/LGAController.php';
 require_once __DIR__ . '/controllers/ResultController.php';
+require_once __DIR__ . '/controllers/PartyController.php';
 
 $action = $_GET['action'] ?? null;
 
@@ -29,6 +30,9 @@ switch ($action) {
     case 'addResult':
         $data = json_decode(file_get_contents("php://input"), true);
         ResultController::addResult($conn, $data);
+        break;
+    case 'getParties':
+        PartyController::getParties($conn);
         break;
     default:
         echo json_encode(["error" => "Invalid action"]);
