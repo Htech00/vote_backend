@@ -1,5 +1,5 @@
 <?php
-// Prevent PHP warnings breaking JSON output
+// Prevent PHP warnings from breaking JSON output
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
@@ -16,8 +16,17 @@ class ResultController {
         ];
 
         try {
+            // Validate connection
+            if (!$conn) {
+                $response['message'] = "Database connection failed!";
+                echo json_encode($response);
+                ob_end_flush();
+                return;
+            }
+
+            // Validate input
             if (!is_array($data)) {
-                $response['message'] = "Invalid data format";
+                $response['message'] = "Invalid data format!";
                 $response['received'] = $data;
                 echo json_encode($response);
                 ob_end_flush();
@@ -60,7 +69,7 @@ class ResultController {
             }
         } catch (Exception $e) {
             $response['errors'][] = $e->getMessage();
-            $response['message'] = "An exception occurred";
+            $response['message'] = "An exception occurred: " . $e->getMessage();
         }
 
         ob_clean(); // Clear any accidental output
