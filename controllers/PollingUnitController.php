@@ -22,5 +22,30 @@ class PollingUnitController {
         }
         echo json_encode($results);
     }
+
+    public static function addResult($conn, $data) {
+        if (!is_array($data)) {
+            echo json_encode(["success" => false, "message" => "Invalid data format"]);
+            return;
+        }
+
+        foreach ($data as $r) {
+            $polling_unit_id = intval($r['polling_unit_uniqueid']);
+            $party = mysqli_real_escape_string($conn, $r['party_abbreviation']);
+            $score = intval($r['party_score']);
+            $entered_by_user = mysqli_real_escape_string($conn, $r['entered_by_user']);
+
+            $query = "INSERT INTO announced_pu_results 
+                        (polling_unit_uniqueid, party_abbreviation, party_score, entered_by_user, date_entered, user_ip_address)
+                      VALUES 
+                        ($polling_unit_id, '$party', $score, '$entered_by_user', NOW(), '127.0.0.1')";
+
+            mysqli_query($conn, $query);
+        }
+
+        echo json_encode(["success" => true, "message" => "Polling unit results saved successfully"]);
+    }
+
+    
 }
 ?>
